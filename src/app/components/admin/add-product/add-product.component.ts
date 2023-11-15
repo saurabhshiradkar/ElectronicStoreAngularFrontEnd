@@ -21,6 +21,11 @@ export class AddProductComponent implements OnInit {
 
   product: Product = new Product();
 
+  imageData: ImageData = {
+    previewImageUrl: '',
+    file: undefined,
+  }
+
 
   constructor(
     private categoryService: CategoryService,
@@ -88,7 +93,8 @@ export class AddProductComponent implements OnInit {
     }
     if (
       this.product.discountedPrice <= 0 ||
-      this.product.discountedPrice > this.product.price
+      parseFloat(this.product.discountedPrice + '') >
+      parseFloat(this.product.price + '')
     ) {
       this.toastrService.error('Discounted Price should be less than or equal to product price !');
       return;
@@ -103,6 +109,16 @@ export class AddProductComponent implements OnInit {
           next: (createdProduct) => {
             console.log(createdProduct);
             this.toastrService.success(`Added New Product without category !`);
+            //Image Upload 
+            this.productService.uploadProductImage(createdProduct.productId, this.imageData.file!).subscribe({
+              next: (imageUploadData) => {
+                console.log(imageUploadData);
+
+              },
+              error: (error) => {
+                console.log(error);
+              }
+            });
             productForm.resetForm();
           },
           error: (error) => {
@@ -115,7 +131,19 @@ export class AddProductComponent implements OnInit {
         .subscribe({
           next: (createdProduct) => {
             console.log(createdProduct);
-            this.toastrService.success(`Added New Product in ${this.product.category.title} category !`);
+            this.toastrService.success(`Added New Product in ${createdProduct.category.title} category !`);
+
+            //Image Upload 
+            this.productService.uploadProductImage(createdProduct.productId, this.imageData.file!).subscribe({
+              next: (imageUploadData) => {
+                console.log(imageUploadData);
+
+              },
+              error: (error) => {
+                console.log(error);
+              }
+            });
+
             productForm.resetForm();
           },
           error: (error) => {
@@ -125,6 +153,38 @@ export class AddProductComponent implements OnInit {
     }
 
 
+  }
+
+  imageFieldChanged(event: Event) {
+    console.log(event);
+    this.imageData.file = (event.target as HTMLInputElement).files![0]
+    console.log(this.imageData.file);
+    if ((this.imageData.file.type == "image/png") || (this.imageData.file.type == "image/jpeg")) {
+      // preview file
+
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        this.imageData.previewImageUrl = reader.result as string;
+      }
+      reader.readAsDataURL(this.imageData.file)
+
+
+      //upload file 
+    }
+    else {
+      this.toastrService.error("Only JPEG or PNG allowed !");
+      this.imageData.file = undefined;
+      this.imageData.previewImageUrl = '';
+      this.product.productImageName = ''
+
+    }
+  }
+
+  resetImage() {
+    this.imageData.file = undefined;
+    this.imageData.previewImageUrl = '';
+    this.product.productImageName = ''
   }
 
   resetForm(productForm: NgForm) {
@@ -137,3 +197,5 @@ export class AddProductComponent implements OnInit {
   }
 
 }
+
+export interface ImageData { previewImageUrl: String, file: File | undefined }

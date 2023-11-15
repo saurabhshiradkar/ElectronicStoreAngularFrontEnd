@@ -49,7 +49,7 @@ export class LoginComponent {
       }
 
     //call login api
-    this.authService.generateToken(this.loginData).pipe(first())
+    this.authService.generateToken(this.loginData)
     .subscribe({
       next:(value:LoginResponse) => {
         console.log("USER LOGGED IN SUCCESSFULLY USER NAME :- "+value.user?.email);

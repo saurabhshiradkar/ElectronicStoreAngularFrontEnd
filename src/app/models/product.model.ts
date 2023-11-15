@@ -3,7 +3,7 @@ import { Category } from "./category.model";
 // product.model.ts
 export class Product {
   constructor(
-    public productId: String = '',
+    public productId: string = '',
     public title: string = '',
     public description: string = '',
     public quantity: number = 0.00,
@@ -12,6 +12,16 @@ export class Product {
     public live: boolean = false,
     public stock: boolean = false,
     public category: Category = new Category('', '', '', ''),// Allow an instance of Category
-    // public productImageName: string,
+    public productImageName: string = '',
   ){}
+}
+
+export interface ProductsResponse {
+
+  pageNumber : number;
+  pageSize : number;
+  totalElements : number;
+  totalPages : number;
+  lastPage : boolean;
+  content: Product[];
 }

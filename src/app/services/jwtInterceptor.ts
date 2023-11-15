@@ -27,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
         //write logic for adding jwt token in Header of each request
         return this.authService.getLoggedInData().pipe(
-            // take(1),
+            take(1),
             switchMap(value => {
                 // console.log(value.jwtToken + ' FROM SWITCH MAP');
                 //add token in HEADER

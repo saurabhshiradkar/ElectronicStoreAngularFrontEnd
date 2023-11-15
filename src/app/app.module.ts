@@ -48,6 +48,7 @@ import { SingleCategoryViewComponent } from './components/common/single-category
 import { categoryReducer } from './store/category/category.reducers';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { QuillModule } from 'ngx-quill';
 
 const icons = {
   IconCamera,
@@ -107,6 +108,7 @@ const icons = {
       }
       ),
     TablerIconsModule.pick(icons),
+    QuillModule.forRoot(),
 
   ],
   providers: [
