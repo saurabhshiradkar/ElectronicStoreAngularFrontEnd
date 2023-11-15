@@ -1,0 +1,162 @@
+<!-- view-categories.component.html -->
+<div class="row">
+  <div class="col-md-4 mb-4" *ngFor="let category of categories">
+    <app-single-category-view
+      (click)="open(content, category)"
+      [category]="category"
+    ></app-single-category-view>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-content bg-dark text-light">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">
+        {{ selectedCategory?.title }}
+      </h4>
+      <!-- <button
+        type="button"
+        class="btn-close btn btn-info"
+        ngbAutofocus
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      ></button> -->
+    </div>
+    <div class="modal-body">
+      <!-- DIV FOR SHOWING CATEGORY DETAILS -->
+      <div class="view" *ngIf="!updateView">
+        <div class="image-container">
+          <img
+            class="img-fluid border border-light-subtle border-2 rounded-3"
+            [src]="selectedCategory?.coverImage"
+            [alt]="selectedCategory?.title"
+          />
+        </div>
+        <p class="mt-3">
+          {{ selectedCategory?.description }}
+        </p>
+      </div>
+
+      <!-- DIV TO UPDATE CATEGORY DETAILS -->
+      <div class="update" *ngIf="updateView">
+        <form
+          action="#!"
+          #categoryForm="ngForm"
+          (ngSubmit)="formSubmitted($event, categoryForm)"
+          class="bg-dark text-light border rounded p-4"
+        >
+          <div class="form-group mb-2">
+            <label for="categoryTitle">Category Title</label>
+            <input
+              type="text"
+              class="form-control mt-2 bg-dark text-light border-light"
+              id="categoryTitle"
+              placeholder="Enter category title"
+              required
+              name="title"
+              [(ngModel)]="selectedCategory!.title"
+              #titleField="ngModel"
+            />
+            <span
+              [hidden]="titleField.valid || !titleField.touched"
+              class="text-warning mt-2 mx-2"
+              >Category title is required!</span
+            >
+          </div>
+          <div class="form-group mb-2">
+            <label for="descriptionTextArea">Description</label>
+            <textarea
+              class="form-control mt-2 bg-dark text-light border-light"
+              id="descriptionTextArea"
+              rows="3"
+              placeholder="Enter description"
+              required
+              name="description"
+              [(ngModel)]="selectedCategory!.description"
+              #descriptionField="ngModel"
+            ></textarea>
+            <span
+              [hidden]="descriptionField.valid || !descriptionField.touched"
+              class="text-warning mt-2 mx-2"
+              >Description is required!</span
+            >
+          </div>
+          <div class="form-group mb-2">
+            <label for="coverImage">Cover Image</label>
+            <div class="image-container text-center mt-2">
+              <img
+                class="img-fluid border border-light-subtle border-2 rounded-3"
+                [src]="selectedCategory!.coverImage"
+                [alt]="selectedCategory?.title"
+              />
+            </div>
+            <input
+              type="text"
+              class="form-control mt-2 bg-dark text-light border-light"
+              id="coverImage"
+              placeholder="Add Image Url or Pass default.png as image name"
+              required
+              name="coverImage"
+              [(ngModel)]="selectedCategory!.coverImage"
+              #coverImageField="ngModel"
+            />
+            <span
+              [hidden]="coverImageField.valid || !coverImageField.touched"
+              class="text-warning mt-2 mx-2"
+              >Cover image URL is required!</span
+            >
+          </div>
+          <div class="container text-center mt-3">
+            <!-- <button
+              type="submit"
+              class="btn btn-success btn-md"
+              (click)="updateCategory()"
+              *ngIf="updateView"
+            >
+              Save
+            </button> -->
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer">
+
+      <button
+      type="submit"
+      class="btn btn-success"
+      (click)="updateCategory()"
+      *ngIf="updateView"
+    >
+      Save  
+    </button>
+
+      <button
+        type="button"
+        class="btn btn-warning fw-bold text-dark"
+        (click)="toggleUpdateView()"
+        *ngIf="!updateView"
+      >
+        Update
+      </button>
+
+      <button
+        (click)="deleteCategory(selectedCategory)"
+        type="button"
+        class="btn btn-danger fw-bold"
+        *ngIf="!updateView"
+      >
+        Delete
+      </button>
+      <button
+        type="button"
+        class="btn btn-info fw-bold ms-5"
+        (click)="modal.close('Save click')"
+        
+      >
+      {{ updateView ? 'Cancel' : 'Close' }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<pre>{{ closeResult }}</pre>

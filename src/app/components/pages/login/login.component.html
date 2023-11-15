@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="row mt-2 justify-content-center ">
+        <div class="col-md-6">
+            <div class="card rounded shadow-sm">
+                <div class="card-body">
+
+                    <div class="m-2 text-center">
+                        <img 
+                        class="img-fluid" 
+                        style="width: 220px;"
+                        src="/assets/images/login.svg" 
+                        alt="login svg">
+                    </div>
+                    
+                    <h3 class="text-center">Login Here</h3>
+
+                    <form #loginForm = "ngForm"  (ngSubmit)="formSubmitted($event)">
+
+                        <!-- email field -->
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input 
+                            type="email" 
+                            class="form-control" 
+                            placeholder="Enter here" 
+                            id="email"
+                            name="email"
+                            required
+                            [(ngModel)] = "loginData.email"
+                            #emailField = "ngModel"
+                            />
+                            <span [hidden]="emailField.valid || !emailField.touched" class="text-danger mt-2 mx-2">Email is required !</span>
+                        </div>
+                        <!-- password field -->
+                        <div class="mb-3">
+                            <label for="password">Password</label>
+                            <input 
+                            type="password" 
+                            class="form-control" 
+                            placeholder="Enter here" 
+                            id="password"
+                            name="password"
+                            required
+                            [(ngModel)] = "loginData.password"
+                            #password = "ngModel"
+                            />
+                            <span [hidden]="password.valid || !password.touched" class="text-danger mt-2 mx-2">Password is required !</span>
+                        </div>
+
+                        
+                        <div class="mb-2 text-center">
+                            <button type="submit" class="btn btn-success btn-md ">Login</button>
+                            <button type="button" (click)="resetForm(loginForm)" class="btn btn-secondary btn-md ms-2 ">Reset</button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="mb-1">Dont have account ? <a [routerLink]="'/signup'"> Click Here </a></p>
+                            <p class="mb-1">Dont remember password? <a [routerLink]="'/signup'"> Forgot Password </a></p>
+                        </div>
+                        
+                        <!-- <div class="mb-3 text-center d-flex justify-content-center">
+                            <button class="btn btn-success btn-xs flex-grow-1 ">Register</button>
+                            <button class="btn btn-secondary btn-xs  ms-2 flex-grow-1">Reset</button>
+                        </div> -->
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

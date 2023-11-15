@@ -1,0 +1,22 @@
+.cover-image{
+    object-fit: cover;
+    height: 250px;
+    width: 100%;
+    
+}
+.card:hover{
+    background-color: #e2e2e2;
+    cursor: pointer;
+
+}
+
+.card{
+    transition:  background-color 100ms linear;
+}
+.btn{
+    font-weight: 600;
+}
+/* .card{
+    height:400px;
+    overflow: hidden;
+} */

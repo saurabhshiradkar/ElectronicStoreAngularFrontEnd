@@ -1,0 +1,14 @@
+<div class="card">
+    <img
+      [src]="category?.coverImage"
+      class="card-img-top cover-image"
+      [alt]="category?.title"
+    />
+    <div class="card-body">
+      <h5 class="card-title">{{ category?.title }}</h5>
+      <p class="card-text">{{ category?.description |slice:0:30 }}</p>
+    </div>
+    <div class="row text-center px-3 mb-2">
+      <button class="btn btn-dark btn-sm">View</button>
+    </div>
+  </div>

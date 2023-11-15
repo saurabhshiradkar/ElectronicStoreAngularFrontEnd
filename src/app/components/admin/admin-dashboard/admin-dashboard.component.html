@@ -1,0 +1,32 @@
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-md-3">side menu</div>
+        <div class="col-md-9">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div> -->
+
+
+<div class="admin-layout">
+    <div class="sidebar pt-3 bg-dark">
+
+        <!-- <p class="h5 ms-3 text-white">Admin Panel</p> -->
+        <ul class="nav  flex-column">
+            <li class="nav-item px-2" *ngFor="let m of adminMenus">
+                <a 
+                class="nav-link text-white border border-white border-0 rounded-end-3" 
+                [routerLink]=[m.link] 
+                routerLinkActive="active">
+                <i-tabler [name]="m.icon"></i-tabler>
+                {{m.title}}
+            </a>
+            </li>
+        </ul>
+    </div>
+    <div class="content px-2 py-2">
+        <div class="container">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

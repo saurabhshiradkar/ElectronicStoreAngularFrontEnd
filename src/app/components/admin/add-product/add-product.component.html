@@ -1,0 +1,197 @@
+<!-- product-form.component.html -->
+<!-- {{ product | json }} -->
+
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body shadow-sm form-control border-dark rounded-3">
+      <div class="container text-center">
+        <i-tabler class="custom-icon-size" name="script-plus"></i-tabler>
+        <p class="h3 text-center">Add Product</p>
+      </div>
+      <form #productForm="ngForm" (ngSubmit)="onSubmit($event, productForm)">
+        <div class="form-group mb-2">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="title"
+            [(ngModel)]="product.title"
+            name="title"
+            #titleField="ngModel"
+            required
+          />
+          <span
+            [hidden]="titleField.valid || !titleField.touched"
+            class="text-danger mt-2 mx-2"
+          >
+            Title is required!
+          </span>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="description">Description</label>
+          <textarea
+            class="form-control mt-2"
+            id="description"
+            [(ngModel)]="product.description"
+            name="description"
+            #descriptionField="ngModel"
+            required
+          ></textarea>
+
+          <!-- In your component's template
+          <quill-editor #descriptionField="ngModel" [(ngModel)]="product.description"></quill-editor> -->
+
+          <span
+            [hidden]="descriptionField.valid || !descriptionField.touched"
+            class="text-danger mt-2 mx-2"
+          >
+            Description is required!
+          </span>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="quantity">Quantity</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="quantity"
+            [(ngModel)]="product.quantity"
+            name="quantity"
+            #quantityField="ngModel"
+            required
+          />
+          <span
+            [hidden]="quantityField.valid || !quantityField.touched"
+            class="text-danger mt-2 mx-2"
+          >
+            Quantity is required!
+          </span>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="price">Price</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="price"
+            [(ngModel)]="product.price"
+            name="price"
+            #priceField="ngModel"
+            required
+          />
+          <span
+            [hidden]="priceField.valid || !priceField.touched"
+            class="text-danger mt-2 mx-2"
+          >
+            Price is required!
+          </span>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="discountedPrice">Discounted Price</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="discountedPrice"
+            [(ngModel)]="product.discountedPrice"
+            name="discountedPrice"
+            #discountedPriceField="ngModel"
+            required
+          />
+          <span
+            [hidden]="
+              discountedPriceField.valid || !discountedPriceField.touched
+            "
+            class="text-danger mt-2 mx-2"
+          >
+            Discounted Price is required!
+          </span>
+        </div>
+
+        <div class="form-group form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="live"
+            [(ngModel)]="product.live"
+            name="live"
+          />
+          <label class="form-check-label" for="live">Live</label>
+        </div>
+
+        <div class="form-group form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="stock"
+            [(ngModel)]="product.stock"
+            name="stock"
+          />
+          <label class="form-check-label" for="stock">Stock</label>
+        </div>
+
+        <!-- CATEGORY SELECT BOX -->
+        <div class="form-group mb-2">
+          <label for="category">Category</label>
+          <select
+            class="form-control mt-2"
+            id="category"
+            [(ngModel)]="product.category"
+            name="category"
+            required
+            #categoryField="ngModel"
+            [compareWith]="compareFn"
+          >
+            <option
+              [ngValue]="{
+                title : '',
+                description : '',
+                coverImage : '',
+                categoryId : '',
+              }"
+              disabled
+              selected
+            >
+              -----select category-----
+            </option>
+            <option *ngFor="let cat of categories" [ngValue]="cat">
+              {{ cat.title }}
+            </option>
+          </select>
+        </div>
+
+        <!-- <div class="form-group mb-2">
+            <label for="productImageName">Product Image</label>
+            <input 
+              type="file" 
+              class="form-control-file mx-3" 
+              id="productImageName" 
+              [(ngModel)]="product.productImageName" 
+              name="productImageName" 
+              #productImageNameField="ngModel" 
+            />
+            <span 
+              [hidden]="productImageNameField.valid || !productImageNameField.touched" 
+              class="text-danger mt-2 mx-2"
+            >
+              Product Image is required!
+            </span>
+          </div> -->
+
+        <div class="container text-center mt-3">
+          <button type="submit" class="btn btn-primary btn-md">
+            Add Product
+          </button>
+          <button
+            type="reset"
+            (click)="resetForm(productForm)"
+            class="btn btn-secondary btn-md ms-2"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<!-- category-form.component.html -->
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body shadow-sm form-control border-dark rounded-3">
+      <div class="container text-center">
+        <i-tabler class="custom-icon-size" name="file-diff"></i-tabler>
+        <p class="h3 text-center">Add Category</p>
+      </div>
+      <form action="#!" #categoryForm="ngForm" (ngSubmit)="formSubmitted($event,categoryForm)">
+        <div class="form-group mb-2">
+          <label for="categoryTitle">Category Title</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="categoryTitle"
+            placeholder="Enter category title"
+            required
+            name="title"
+            [(ngModel)]="category.title"
+            #titleField="ngModel"
+          />
+          <span
+            [hidden]="titleField.valid || !titleField.touched"
+            class="text-danger mt-2 mx-2"
+            >Category title is required!</span
+          >
+        </div>
+        <div class="form-group mb-2">
+          <label for="descriptionTextArea">Description</label>
+          <textarea
+            class="form-control mt-2"
+            id="descriptionTextArea"
+            rows="3"
+            placeholder="Enter description"
+            required
+            name="description"
+            [(ngModel)]="category.description"
+            #descriptionField="ngModel"
+          ></textarea>
+          <span
+            [hidden]="descriptionField.valid || !descriptionField.touched"
+            class="text-danger mt-2 mx-2"
+            >Description is required!</span
+          >
+        </div>
+        <div class="form-group mb-2">
+          <label for="coverImage">Cover Image</label>
+          <input
+            type="text"
+            class="form-control mt-2"
+            id="coverImage"
+            placeholder="Add Image Url or Pass default.png as image name"
+            required
+            name="coverImage"
+            [(ngModel)]="category.coverImage"
+            #coverImageField="ngModel"
+          />
+          <span
+            [hidden]="coverImageField.valid || !coverImageField.touched"
+            class="text-danger mt-2 mx-2"
+            >Cover image URL is required!</span
+          >
+        </div>
+        <div class="container text-center mt-3">
+          <button type="submit" class="btn btn-primary btn-md">
+            Add Category
+          </button>
+          <button type="button" (click)="resetForm(categoryForm)" class="btn btn-secondary btn-md ms-2">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- {{ category | json }} -->
