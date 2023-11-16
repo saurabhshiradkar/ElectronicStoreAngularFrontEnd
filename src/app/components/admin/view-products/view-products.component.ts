@@ -19,7 +19,7 @@ export class ViewProductsComponent implements OnInit {
 
   ) { }
   ngOnInit(): void {
-    this.productService.getAllProducts().subscribe({
+    this.productService.getAllProducts(0,10,'addedDate','desc').subscribe({
       next: (productResponse) => {
         this.productsResponse = productResponse;
         console.log(this.productsResponse);

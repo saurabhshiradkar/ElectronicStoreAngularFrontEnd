@@ -1,7 +1,7 @@
-<div class="row">
+<div class="row mt-4">
   <div class="col-md-12">
     <div class="table-responsive">
-      <table class="table">
+      <table class="table table-bordered table-hover shadow-sm border">
         <thead>
           <tr>
             <th scope="col">S.No.</th>
@@ -15,7 +15,7 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
           <tr *ngFor="let product of productsResponse?.content; let i = index">
             <td>
               {{i+1}}  
@@ -33,18 +33,14 @@
                 {{product.discountedPrice}}
             </td>
             <td>
-                {{product.stock?'Yes':'No'}}
+                <span class="badge "[ngClass]="{'text-bg-success': product.stock,'text-bg-danger': !product.stock}">{{product.stock?'In Stock':'Out of Stock'}}</span>
             </td>
             <td>
-                {{product.live?'Live':'Not Live'}}
+                <span class="badge "[ngClass]="{'text-bg-success': product.live,'text-bg-danger': !product.live}">{{product.live?'Live':'Not Live'}}</span>
             </td>
             <td>
                 {{product.category.title}}
             </td>
-            <!-- <ng-container *ngIf="product.category.title; else noCategory">
-                {{ product.category.title }}
-              </ng-container>
-              <ng-template #noCategory>No Category</ng-template> -->
             <td>
                 <button class="btn btn-primary btn-sm">Update</button>
                 <button class="btn btn-danger btn-sm ms-2">Delete</button>
