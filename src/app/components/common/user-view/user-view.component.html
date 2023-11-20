@@ -1,0 +1,44 @@
+<div class="card mt-4" *ngIf="user">
+    <div class="card-header">USER INFORMATION</div>
+    <div class="card-body">
+        <div class="image-container text-center">
+            <img class="img" src="{{userService.getUserImageUrl(user)}}" alt="profile pic"
+            onerror="this.onerror=null; this.src='/assets/images/default_profile.png';"
+            >
+        </div>
+        <h4 class="text-center ">{{user.name | uppercase}}</h4>
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-hover">
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">USER ID</td>
+                        <td class="fw-semibold" >{{user.userId}}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">NAME</td>
+                        <td class="fw-semibold text-capitalize" >{{user.name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">EMAIL</td>
+                        <td class="fw-semibold" >{{user.email}}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">GENDER</td>
+                        <td class="fw-semibold" >{{user.gender}}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">ABOUT</td>
+                        <td class="fw-semibold" ><span>{{user.about}}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">ROLE</td>
+                        <td>
+                          <span class="badge rounded-pill text-bg-success ms-2" [ngClass]="{'text-bg-primary': role.roleName=='ROLE_NORMAL', 'text-bg-success': role.roleName=='ROLE_ADMIN'}" *ngFor="let role of user.roles;">{{role.roleName}}</span>
+                        </td>
+                      </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

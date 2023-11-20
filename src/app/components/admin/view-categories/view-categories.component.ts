@@ -31,25 +31,9 @@ export class ViewCategoriesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.categoryService.getCategories().subscribe({
-    //   next: (categoryResponse) => {
-
-    //     // Update categoryCoverImage for each category
-    //     this.categories = categoryResponse.content.map(category => {
-    //       if (!category.coverImage.includes('http') && !category.coverImage.startsWith('data')) {
-    //         category.coverImage = `${environment.apiUrl}/categories/image/${category.categoryId}`;
-    //       }
-    //       return category;
-    //     });
-
-    //     // console.log(this.categories);
-
-    //   },
-    // })
-
-    this.catStore.select('cat').pipe(take(1)).subscribe({
+    this.catStore.select('cat').subscribe({
       next: (categories) => {
-        if (categories.length > 0) {
+        if (this.categories.length > 0) {
           // console.log('Categories already there...');
           this.categories = categories;
         }
@@ -68,6 +52,7 @@ export class ViewCategoriesComponent implements OnInit {
             }
           });
         }
+
       }
     });
   }
@@ -101,71 +86,53 @@ export class ViewCategoriesComponent implements OnInit {
 
     this.categoryService.deleteCategory(categoryToBeDeleted!.categoryId).subscribe({
       next: (data) => {
-        console.log(data);
+        // console.log(data);
         this.toastr.success('Category Deleted!');
-        this.modalService.dismissAll();
         this.categories = this.categories.filter(cat => cat.categoryId != this.selectedCategory?.categoryId);
+        this.modalService.dismissAll();
       },
 
       error: (error) => {
         console.log(error);
         this.toastr.error('Error In Deleting Category !');
+        this.modalService.dismissAll();
       }
     });
-
-    // Swal.fire({
-    //   title: 'Are you sure?',
-    //   text: 'You won\'t be able to revert this!',
-    //   icon: 'warning',
-    //   showCancelButton: true,
-    //   confirmButtonColor: '#3085d6',
-    //   cancelButtonColor: '#d33',
-    //   confirmButtonText: 'Yes, delete it!'
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     // Perform the delete operation here
-
-    //     this.categoryService.deleteCategory(categoryToBeDeleted!.categoryId).subscribe({
-    //       next: (data) => {
-    //         console.log(data);
-    //         // this.toastr.success('Category Deleted!');
-    //         // this.modalService.dismissAll();
-    //         this.categories = this.categories.filter(cat => cat.categoryId != this.selectedCategory?.categoryId);
-
-    //         Swal.fire({
-    //           title: 'Deleted!',
-    //           text: 'Category Deleted.',
-    //           icon: 'success'
-    //         });
-
-    //         this.modalService.dismissAll();
-    //       },
-
-    //       error: (error) => {
-    //         console.log(error);
-    //         // this.toastr.error('Error In Deleting Category !');
-    //       }
-    //     });
-    //   }
-    // });
+    // console.log('DELETE CATEGORY WORKING ');
+    
+    // console.log(categoryToBeDeleted);
   }
 
   updateCategory() {
     this.categoryService.updateCategory(this.selectedCategory!).subscribe({
       next: (updatedCategory) => {
         console.log(updatedCategory);
-        this.toastr.success("Category Updated");
+        
+        // this.categories = this.categories.map(cat => {
+        //   if (cat.categoryId === this.selectedCategory?.categoryId) {
+        //     cat.title = this.selectedCategory.title;
+        //     cat.description = this.selectedCategory.description;
+        //     cat.coverImage = this.selectedCategory.coverImage;
+        //     return cat;
+        //   }
+        //   return cat;
+        // }
+
         this.categories = this.categories.map(cat => {
           if (cat.categoryId === this.selectedCategory?.categoryId) {
-            cat.title = updatedCategory.title;
-            cat.description = updatedCategory.description;
-            cat.coverImage = updatedCategory.coverImage;
-            return cat;
+            return {
+              ...cat,
+              title: this.selectedCategory.title,
+              description: this.selectedCategory.description,
+              coverImage: this.selectedCategory.coverImage
+            };
           }
           return cat;
-        });
+        }
 
+        );
         this.modalService.dismissAll();
+        this.toastr.success("Category Updated");
       },
       error: (error) => {
         console.log(error);
@@ -189,6 +156,10 @@ export class ViewCategoriesComponent implements OnInit {
 
   resetForm(categoryForm: NgForm) {
 
+  }
+
+  yesDelete(){
+    console.log('Delete Working');
   }
 
 }

@@ -1,0 +1,8 @@
+.image-container img{
+    height: 250px;
+    width: auto;
+}
+
+.action-column {
+    min-width: 120px; /* Adjust the width as needed */
+  }

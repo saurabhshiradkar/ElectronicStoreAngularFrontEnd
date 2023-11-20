@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 
 export const normalUserGuard: CanActivateFn = (route, state) => {
 
-  console.log('normal user guard');
+  // console.log('normal user guard');
 
   const authService = inject(AuthService);
   const router = inject(Router)

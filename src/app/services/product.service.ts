@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Product, ProductsResponse } from '../models/product.model';
+import { Product, ProductWithOutCategory, ProductsResponse } from '../models/product.model';
 import { environment } from 'src/environments/environment';
 import { Category } from '../models/category.model';
 import { map } from 'rxjs';
@@ -17,7 +17,7 @@ export class ProductService {
     const categoryId = product.category.categoryId;
     return this.http.post<Product>(`${environment.apiUrl}/categories/${categoryId}/products`, product);
   }
-  createProduct(product: Product) {
+  createProduct(product: ProductWithOutCategory) {
     return this.http.post<Product>(`${environment.apiUrl}/products`, product);
   }
 
@@ -39,7 +39,7 @@ export class ProductService {
   }
 
 
-  private updateCategoryAndImageFields(productResponse: ProductsResponse): ProductsResponse {
+  public updateCategoryAndImageFields(productResponse: ProductsResponse): ProductsResponse {
     // Check if the productResponse and its content are available
     if (productResponse && productResponse.content) {
       productResponse.content.forEach((product: Product) => {
@@ -51,7 +51,7 @@ export class ProductService {
         if (!product.productImageName || product.productImageName === '') {
           // If image name is null or empty, assign default.png
           product.productImageName = 'assets/images/default.png';
-        } else if (!product.productImageName.includes('http') && !product.productImageName.startsWith('data')) {
+        } else if (!product.productImageName.includes('http') || !product.productImageName.startsWith('data')) {
           product.productImageName = `${environment.apiUrl}/products/image/${product.productId}`;
         }
       });
@@ -61,29 +61,65 @@ export class ProductService {
   }
 
 
+  getProductImageUrl(productId: string) {
+    return `${environment.apiUrl}/products/image/${productId}`;
+  }
 
-  // private updateCategoryAndImageFields(productResponse: ProductsResponse): ProductsResponse {
-  //   // Check if the productResponse and its content are available
-  //   if (productResponse && productResponse.content) {
-  //     productResponse.content.forEach((product: Product) => {
-  //       if (product.category === null) {
-  //         // Assuming that all other fields in the existing category should be retained
-  //         product.category = new Category('', 'No Category', '', '');
-  //       }
-  //       if (productResponse && productResponse.content) {
-  //         productResponse.content.forEach((product: Product) => {
-  //           if (product.productImageName == null) {
-  //             product.productImageName = 'default.png';
-  //           } 
-  //           else if (!product.productImageName.includes('http') && !product.productImageName.startsWith('data')) {
-  //               product.productImageName = `${environment.apiUrl}/products/image/${product.productId}`;
-  //             }
-  //         });
-  //       }
-  //     });
-  //   }
+  deleteProduct(productId: string) {
+    return this.http.delete(`${environment.apiUrl}/products/${productId}`);
+  }
 
-  //   return productResponse;
-  // }
+  updateProduct(product: Product) {
+    return this.http.put<Product>(`${environment.apiUrl}/products/${product.productId}`, product);
+  }
+
+  updateCategoryOfProduct(productId: String, categoryId: String) {
+    return this.http.put<Product>(`${environment.apiUrl}/categories/${categoryId}/products/${productId}`, null);
+  }
+
+
+  searchProduct(query: String, pageNumber = 0, pageSize = 10, sortBy = 'title', sortDir = 'asc') {
+    return this.http.get<ProductsResponse>(`${environment.apiUrl}/products/search/${query}?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`)
+    .pipe(
+      map((productResponse: ProductsResponse) => this.updateProductImageUrls(productResponse))
+    );
+  }
+
+  getProduct(productId:String){
+    return this.http.get<Product>(`${environment.apiUrl}/products/${productId}`)
+    .pipe(
+      map((product: Product) => {
+        // if (!product.productImageName || product.productImageName === '') {
+        //   // If image name is null or empty, assign default.png
+        //   product.productImageName = 'assets/images/default.png';
+        // } else if (!product.productImageName.includes('http') || !product.productImageName.startsWith('data')) {
+        //   product.productImageName = `${environment.apiUrl}/products/image/${product.productId}`;
+        // }
+        return product;
+      })
+    );
+  }
+
+
+  public updateProductImageUrls(productResponse: ProductsResponse): ProductsResponse {
+    // Check if the productResponse and its content are available
+    if (productResponse && productResponse.content) {
+      productResponse.content.forEach((product: Product) => {
+        if (!product.productImageName || product.productImageName === '') {
+          // If image name is null or empty, assign default.png
+          product.productImageName = 'assets/images/default.png';
+        } else if (!product.productImageName.includes('http') || !product.productImageName.startsWith('data')) {
+          product.productImageName = `${environment.apiUrl}/products/image/${product.productId}`;
+        }
+      });
+    }
+
+    return productResponse;
+  }
+  
+  getUserImageUrl(product:Product){
+    return `${environment.apiUrl}/users/image/${product.productId}`;
+  }
+
 
 }

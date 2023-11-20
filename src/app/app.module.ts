@@ -49,6 +49,9 @@ import { categoryReducer } from './store/category/category.reducers';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule } from 'ngx-quill';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { UserComponent } from './components/pages/user/user.component';
+import { UserViewComponent } from './components/common/user-view/user-view.component';
 
 const icons = {
   IconCamera,
@@ -87,6 +90,8 @@ const icons = {
     ViewOrdersComponent,
     ViewUsersComponent,
     SingleCategoryViewComponent,
+    UserComponent,
+    UserViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,6 +114,9 @@ const icons = {
       ),
     TablerIconsModule.pick(icons),
     QuillModule.forRoot(),
+    SweetAlert2Module.forRoot({
+
+    }),
 
   ],
   providers: [

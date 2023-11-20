@@ -1,0 +1,125 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <app-user-view [user]="user"></app-user-view>
+      <div class="row text-center mx-2 my-2" *ngIf="user">
+        <button
+          (click)="openUpdateModal(updateContent)"
+          class="btn btn-warning fw-bold"
+        >
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #updateContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Update Profile</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body" *ngIf="this.user">
+    <!-- {{ user | json }} -->
+    <!-- UPDATE USER PROFILE -->
+    <div class="container mt-2">
+      <form #userForm="ngForm" (ngSubmit)="formSubmitted($event)">
+        <div class="form-group mt-3">
+          <label class="form-label" for="username">Username:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            required
+            [(ngModel)]="user.name"
+          />
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label" for="gender">Gender:</label>
+          <select
+            class="form-select"
+            id="gender"
+            name="gender"
+            required
+            [(ngModel)]="user.gender"
+          >
+            <option value="male" selected>Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label" for="about">About:</label>
+          <textarea
+            class="form-control"
+            id="about"
+            name="about"
+            rows="4"
+            [(ngModel)]="user.about"
+          ></textarea>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label" for="password">Password:</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            required
+            [(ngModel)]="user.password"
+          />
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label" for="confirmPassword"
+            >Confirm Password:</label
+          >
+          <input
+            type="password"
+            class="form-control"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            [(ngModel)]="user.confirmPassword"
+          />
+        </div>
+
+        <div class="form-group mt-3">
+          <div class="preview-container text-center">
+            <img
+              class="image-preview"
+              [src]="previewImageUrl"
+              alt=""
+            />
+          </div>
+          <label class="form-label" for="image">Image:</label>
+          <input
+            (change)="imageFieldChanged($event)"
+            type="file"
+            class="form-control"
+            id="image"
+            accept="image/*"
+            name="imageName"
+          />
+        </div>
+
+        <div class="form-group mt-3 text-center">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+    <!-- UPDATE USER PROFILE -->
+  </div>
+</ng-template>
+
+<!-- [(ngModel)]="user.imageName" -->
+<!-- onerror="this.onerror=null; this.src='/assets/images/default_profile.png';" -->

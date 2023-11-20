@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -52,13 +53,16 @@ export class LoginComponent {
     this.authService.generateToken(this.loginData)
     .subscribe({
       next:(value:LoginResponse) => {
-        console.log("USER LOGGED IN SUCCESSFULLY USER NAME :- "+value.user?.email);
+        // console.log("USER LOGGED IN SUCCESSFULLY USER NAME :- "+value.user?.email);
         this.store.dispatch(setLoginData(value));
         this.router.navigate(['/user']);     
       },
-      error:(error)=>{
-        console.log(error);
-        this.toastr.error(error.error.message)
+      error:(error : HttpErrorResponse)=>{
+        const errorMessage = error.error.message;
+        console.log(`Error Message: ${errorMessage}`);
+        
+        // Show toastr message
+        this.toastr.error(errorMessage);
       },
       complete:()=>{
         this.toastr.success('Login Successfull !')

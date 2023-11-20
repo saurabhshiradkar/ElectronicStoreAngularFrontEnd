@@ -1,53 +1,487 @@
 <div class="row mt-4">
   <div class="col-md-12">
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover shadow-sm border">
-        <thead>
+    <div class="card shadow-sm border">
+      <div class="card-body">
+        <div class="table-responsive">
+          <!-- <label class="text-" for="query">Search Product</label> -->
+          <div class="search-field-container input-group">
+            <input
+              id="query"
+              type="text"
+              placeholder="Search Here..."
+              class="form-control rounded-0"
+              name="query"
+              [(ngModel)]="searchQuery"
+              (keyup)="restoreOldData()"
+              (keypress)="searchProduct()"
+            />
+            <!-- <button (click)="searchProduct()" class="btn btn-outline-secondary">
+              Search
+            </button> -->
+          </div>
+          <table class="table table-bordered table-hover shadow-sm border">
+            <thead>
+              <tr>
+                <th scope="col">S.No.</th>
+                <th scope="col">Name</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Discounted Price</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Live</th>
+                <th scope="col">Category</th>
+                <th scope="col" colspan="2">Action</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr
+                *ngFor="let product of productsResponse?.content; let i = index"
+              >
+                <td>
+                  {{ i + 1 }}
+                </td>
+                <td role="button" (click)="open(content, product)">
+                  {{ product.title }}
+                </td>
+                <td>
+                  {{ product.quantity }}
+                </td>
+                <td>
+                  {{ product.price }}
+                </td>
+                <td>
+                  {{ product.discountedPrice }}
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'text-bg-success': product.stock,
+                      'text-bg-danger': !product.stock
+                    }"
+                    >{{ product.stock ? "In Stock" : "Out of Stock" }}</span
+                  >
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'text-bg-success': product.live,
+                      'text-bg-danger': !product.live
+                    }"
+                    >{{ product.live ? "Live" : "Not Live" }}</span
+                  >
+                </td>
+                <td>
+                  {{ product.category.title }}
+                </td>
+                <td>
+                  <button
+                    class="btn btn-primary btn-sm"
+                    (click)="toggleUpdateView(content, product)"
+                  >
+                    Update
+                  </button>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    [swal]="confirmSwal"
+                    (confirm)="yesDelete($event, product)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end" *ngIf="productsResponse">
+      <ngb-pagination
+        [collectionSize]="productsResponse.totalElements"
+        [page]="productsResponse.pageNumber + 1"
+        [pageSize]="productsResponse.pageSize"
+        [ellipses]="true"
+        [maxSize]="10"
+        (pageChange)="pageChange($event)"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW PRODUCT MODAL -->
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <!-- <h4 class="modal-title" id="modal-basic-title">{{ product?.title }}</h4> -->
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <!-- VIEW MODAL BODY -->
+  <div class="modal-body" *ngIf="product && !update">
+    <div class="image-container text-center mb-3">
+      <img [src]="product.productImageName" alt="Product Image" />
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="h5 text-center mb-3">{{ product.title }}</p>
+      </div>
+    </div>
+
+    <div class="information mb-3">
+      <table class="table table-bordered text-center">
+        <tbody>
           <tr>
-            <th scope="col">S.No.</th>
-            <th scope="col">Name</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Price</th>
-            <th scope="col">Discounted Price</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Live</th>
-            <th scope="col">Category</th>
-            <th scope="col">Action</th>
+            <td class="fw-bold">Price</td>
+            <td>{{ product.price }}</td>
           </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <tr *ngFor="let product of productsResponse?.content; let i = index">
+          <tr>
+            <td class="fw-bold">Discounted Price</td>
+            <td>{{ product.discountedPrice }}</td>
+          </tr>
+          <tr>
+            <td class="fw-bold">Quantity</td>
+            <td>{{ product.quantity }}</td>
+          </tr>
+          <tr>
+            <td class="fw-bold">Stock</td>
             <td>
-              {{i+1}}  
+              <span
+                class="badge"
+                [ngClass]="{
+                  'text-bg-success': product.stock,
+                  'text-bg-danger': !product.stock
+                }"
+                >{{ product.stock ? "In Stock" : "Out of Stock" }}</span
+              >
             </td>
+          </tr>
+          <tr>
+            <td class="fw-bold">Live</td>
             <td>
-                {{product.title}}
+              <span
+                class="badge"
+                [ngClass]="{
+                  'text-bg-success': product.live,
+                  'text-bg-danger': !product.live
+                }"
+                >{{ product.live ? "Live" : "Not Live" }}</span
+              >
             </td>
+          </tr>
+          <tr>
+            <td class="fw-bold">Category</td>
             <td>
-                {{product.quantity}}
-            </td>
-            <td>
-                {{product.price}}
-            </td>
-            <td>
-                {{product.discountedPrice}}
-            </td>
-            <td>
-                <span class="badge "[ngClass]="{'text-bg-success': product.stock,'text-bg-danger': !product.stock}">{{product.stock?'In Stock':'Out of Stock'}}</span>
-            </td>
-            <td>
-                <span class="badge "[ngClass]="{'text-bg-success': product.live,'text-bg-danger': !product.live}">{{product.live?'Live':'Not Live'}}</span>
-            </td>
-            <td>
-                {{product.category.title}}
-            </td>
-            <td>
-                <button class="btn btn-primary btn-sm">Update</button>
-                <button class="btn btn-danger btn-sm ms-2">Delete</button>
+              {{ product.category.title }}
             </td>
           </tr>
         </tbody>
       </table>
+      <div class="card">
+        <div class="card-body">
+          <div class="description px-2" [innerHTML]="product.description"></div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- UPDATE  MODAL BODY -->
+
+  <div class="modal-body" *ngIf="product && update">
+    <!-- {{ product | json }} -->
+    <form
+      #productForm="ngForm"
+      (ngSubmit)="updateFormSubmitted($event, productForm)"
+    >
+      <div class="image-container text-center mb-3">
+        <img [src]="product.productImageName" alt="" />
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="form-group my-2">
+            <label for="title">Title</label>
+            <input
+              id="title"
+              type="text"
+              name="title"
+              [(ngModel)]="product.title"
+              class="form-control"
+              #titleField="ngModel"
+            />
+            <span
+              [hidden]="titleField.valid || !titleField.touched"
+              class="text-danger mt-2 mx-2"
+            >
+              Title is required!
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="information mb-3">
+        <table class="table table-bordered text-center">
+          <tbody>
+            <tr>
+              <td class="fw-bold">Price</td>
+              <td>
+                <input
+                  type="text"
+                  name="price"
+                  class="form-control text-center"
+                  [(ngModel)]="product.price"
+                  #priceField="ngModel"
+                />
+                <span
+                  [hidden]="priceField.valid || !priceField.touched"
+                  class="text-danger mt-2 mx-2"
+                >
+                  Price is required!
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Discounted Price</td>
+              <td>
+                <input
+                  type="text"
+                  name="discountedPrice"
+                  class="form-control text-center"
+                  [(ngModel)]="product.discountedPrice"
+                  #discountedPriceField="ngModel"
+                />
+                <span
+                  [hidden]="
+                    discountedPriceField.valid || !discountedPriceField.touched
+                  "
+                  class="text-danger mt-2 mx-2"
+                >
+                  Discounted Price is required!
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Quantity</td>
+              <td>
+                <input
+                  type="text"
+                  name="quantity"
+                  class="form-control text-center"
+                  [(ngModel)]="product.quantity"
+                  #quantityField="ngModel"
+                />
+                <span
+                  [hidden]="quantityField.valid || !quantityField.touched"
+                  class="text-danger mt-2 mx-2"
+                >
+                  Quantity is required!
+                </span>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="fw-bold">Stock</td>
+              <td>
+                <div class="form-check form-switch">
+                  <input
+                    type="checkbox"
+                    name="stock"
+                    [(ngModel)]="product.stock"
+                    class="form-check-input"
+                    id="stockSwitch"
+                  />
+                  <label class="form-check-label" for="stockSwitch"></label>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'text-bg-success': product.stock,
+                      'text-bg-danger': !product.stock
+                    }"
+                    >{{ product.stock ? "In Stock" : "Out of Stock" }}</span
+                  >
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="fw-bold">Live</td>
+              <td>
+                <div class="form-check form-switch">
+                  <input
+                    type="checkbox"
+                    name="live"
+                    [(ngModel)]="product.live"
+                    class="form-check-input"
+                    id="liveSwitch"
+                  />
+                  <label class="form-check-label" for="liveSwitch"></label>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'text-bg-success': product.live,
+                      'text-bg-danger': !product.live
+                    }"
+                    >{{ product.live ? "Live" : "Not Live" }}</span
+                  >
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <quill-editor
+              classes="form-control border-dark"
+              [style]="{ height: '200px', width: '100%' }"
+              [placeholder]="'Enter Description Here'"
+              [(ngModel)]="product.description"
+              #descriptionField="ngModel"
+              name="description"
+            ></quill-editor>
+            <span
+              [hidden]="descriptionField.valid || !descriptionField.touched"
+              class="text-danger mt-2 mx-2"
+            >
+              Description is required!
+            </span>
+          </div>
+        </div>
+
+        <div class="my-3 text-center">
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- PRODUCT IMAGE UPDATE -->
+
+    <div class="card mt-2" *ngIf="product && update">
+      <div class="card-body">
+        <div class="form-group mb-2">
+          <label for="productImageName">Product Image</label>
+          <div class="text-center my-3" *ngIf="imageData.file">
+            <img
+              style="height: 250px; width: auto"
+              [src]="imageData.previewImageUrl"
+              alt="preview product image"
+            />
+          </div>
+
+          <input
+            type="file"
+            class="form-control-file mx-3"
+            id="productImageName"
+            name="productImageName"
+            (change)="imageFieldChanged($event)"
+          />
+
+          <button
+            type="button"
+            (click)="resetImage()"
+            class="btn btn-secondary btn-sm ms-2"
+          >
+            Reset Image
+          </button>
+
+          <button
+            *ngIf="imageData.file"
+            type="button"
+            (click)="updateProductImage(product.productId, imageData.file)"
+            class="btn btn-outline-success btn-xs ms-2"
+          >
+            Update Image
+          </button>
+
+          <!-- <span
+            [hidden]="
+              productImageNameField.valid || !productImageNameField.touched
+            "
+            class="text-danger mt-2 mx-2"
+          >
+            Product Image is required!
+          </span> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORY SELECT BOX -->
+    <div class="input-group mb-2">
+      <!-- <label for="category">Category</label> -->
+      <select
+        class="form-select mt-2"
+        id="category"
+        [(ngModel)]="product.category"
+        name="category"
+        required
+        #categoryField="ngModel"
+        [compareWith]="compareFn"
+      >
+        <option
+          [ngValue]="{
+            title : 'No Category',
+            description : '',
+            coverImage : '',
+            categoryId : '',
+          }"
+
+          selected
+        >
+          -----select category-----
+        </option>
+        <option *ngFor="let cat of categories" [ngValue]="cat">
+          {{ cat.title }}
+        </option>
+      </select>
+      <button
+        type="button"
+        (click)="updateProductCategory()"
+        class="btn btn-outline-success btn-xs ms-2"
+      >
+        Update Category
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      (click)="toggleUpdateView1()"
+      type="button"
+      class="btn ms-4 btn-sm"
+      [ngClass]="{
+        'btn-success': update,
+        'btn-warning': !update
+      }"
+    >
+      {{ update ? "View" : "Update" }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-primary ms-4 btn-sm"
+      (click)="modal.close()"
+    >
+      Close
+    </button>
+  </div>
+</ng-template>
+
+<swal
+  #confirmSwal
+  [title]="['Are You Sure ?']"
+  [text]="'Delete Product'"
+  [confirmButtonText]="'Yes Delete !'"
+  [confirmButtonColor]="'red'"
+  [showCancelButton]="true"
+  [icon]="'info'"
+>
+</swal>

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { Category } from 'src/app/models/category.model';
-import { Product } from 'src/app/models/product.model';
+import { Product, ProductWithOutCategory } from 'src/app/models/product.model';
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { setCategoryData } from 'src/app/store/category/category.actions';
@@ -20,6 +20,7 @@ export class AddProductComponent implements OnInit {
   categories: Category[] = [];
 
   product: Product = new Product();
+  productWithOutCategory: ProductWithOutCategory = new ProductWithOutCategory();
 
   imageData: ImageData = {
     previewImageUrl: '',
@@ -36,7 +37,9 @@ export class AddProductComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.catStore.select('cat').pipe(take(1)).subscribe({
+    this.catStore.select('cat').subscribe({
+
+      //loading categories
       next: (categories) => {
         if (categories.length > 0) {
           // console.log('Categories already there...');
@@ -65,12 +68,13 @@ export class AddProductComponent implements OnInit {
 
   onSubmit(event: SubmitEvent, productForm: NgForm) {
     // Mark the form as touched to trigger validation messages
-    productForm.form.markAllAsTouched();
+    // productForm.form.markAllAsTouched();
 
     // Handle form submission logic here
     event.preventDefault();
 
-    // validate data
+    //VALIDATE DATA
+    
     if (productForm.form.invalid) {
       this.toastrService.error('Please Fill the form correctly!');
       return;
@@ -79,22 +83,26 @@ export class AddProductComponent implements OnInit {
       this.toastrService.error('Title is Required !');
       return;
     }
-    if (this.product.description.trim() === '') {
+    if (this.product.description==null ||  this.product.description.trim() === '') {
       this.toastrService.error('Description is Required !');
       return;
     }
-    if (this.product.quantity <= 0) {
+    const numericQuantity = parseFloat(this.product.quantity + '');
+    if (isNaN(numericQuantity) || numericQuantity <= 0) {
       this.toastrService.error('Quantity must be greater than Zero(0)!');
       return;
     }
-    if (this.product.price <= 0) {
-      this.toastrService.error('Provide Correct Product Price !');
+    
+    const numericProductPrice = parseFloat(this.product.price + '');
+    if (isNaN(numericProductPrice) || numericProductPrice <= 0) {
+      this.toastrService.error('Please provide a correct numeric product price!');
       return;
     }
-    if (
-      this.product.discountedPrice <= 0 ||
-      parseFloat(this.product.discountedPrice + '') >
-      parseFloat(this.product.price + '')
+    const numericDiscountedPrice = parseFloat(this.product.discountedPrice +'');
+    if (isNaN(numericDiscountedPrice) || 
+      numericDiscountedPrice <= 0 ||
+      numericDiscountedPrice >
+      numericProductPrice
     ) {
       this.toastrService.error('Discounted Price should be less than or equal to product price !');
       return;
@@ -104,7 +112,22 @@ export class AddProductComponent implements OnInit {
     // Check if a category is selected
     if (this.product.category.categoryId == '') {
       // add product without category
-      this.productService.createProduct(this.product)
+    // Create a copy of this.product without the category information
+    const productWithoutCategory: ProductWithOutCategory = {
+      productId: this.product.productId,
+      title: this.product.title,
+      description: this.product.description,
+      quantity: this.product.quantity,
+      price: this.product.price,
+      discountedPrice: this.product.discountedPrice,
+      live: this.product.live,
+      stock: this.product.stock,
+      productImageName: this.product.productImageName,
+    };
+
+    console.log(productWithoutCategory);
+
+      this.productService.createProduct(productWithoutCategory)
         .subscribe({
           next: (createdProduct) => {
             console.log(createdProduct);
@@ -120,6 +143,7 @@ export class AddProductComponent implements OnInit {
               }
             });
             productForm.resetForm();
+            this.resetImage();
           },
           error: (error) => {
             console.log(error);
@@ -137,7 +161,6 @@ export class AddProductComponent implements OnInit {
             this.productService.uploadProductImage(createdProduct.productId, this.imageData.file!).subscribe({
               next: (imageUploadData) => {
                 console.log(imageUploadData);
-
               },
               error: (error) => {
                 console.log(error);
@@ -145,6 +168,7 @@ export class AddProductComponent implements OnInit {
             });
 
             productForm.resetForm();
+            this.resetImage();
           },
           error: (error) => {
             console.log(error);
@@ -198,4 +222,4 @@ export class AddProductComponent implements OnInit {
 
 }
 
-export interface ImageData { previewImageUrl: String, file: File | undefined }
+export interface ImageData { previewImageUrl: string, file: File | undefined }

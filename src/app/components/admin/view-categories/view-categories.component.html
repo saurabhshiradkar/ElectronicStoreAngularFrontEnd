@@ -140,7 +140,7 @@
       </button>
 
       <button
-        (click)="deleteCategory(selectedCategory)"
+        [swal]="confirmSwal"
         type="button"
         class="btn btn-danger fw-bold"
         *ngIf="!updateView"
@@ -159,4 +159,13 @@
   </div>
 </ng-template>
 
-<pre>{{ closeResult }}</pre>
+<swal
+  #confirmSwal
+  [title]="['Are You Sure ?']"
+  [text]="'Delete Product'"
+  [confirmButtonText]="'Yes Delete !'"
+  [confirmButtonColor]="'red'"
+  [showCancelButton]="true"
+  (confirm)="deleteCategory(selectedCategory)"
+>
+</swal>

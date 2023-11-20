@@ -2,8 +2,8 @@
 <!-- {{ product | json }} -->
 
 <div class="container mt-2">
-  <div class="card shadow-sm form-control border-dark rounded-3 mt-2 mb-3 ">
-    <div class="card-body ">
+  <div class="card shadow-sm form-control border-dark rounded-3 mt-2 mb-3">
+    <div class="card-body">
       <div class="container text-center">
         <i-tabler class="custom-icon-size" name="script-plus"></i-tabler>
         <p class="h3 text-center">Add Product</p>
@@ -40,7 +40,7 @@
           ></textarea> -->
           <quill-editor
             classes="form-control border-dark"
-            [style]="{ height: '180px', width:'100%' }"
+            [style]="{ height: '180px', width: '100%' }"
             [placeholder]="'Enter Description Here'"
             [(ngModel)]="product.description"
             #descriptionField="ngModel"
@@ -142,7 +142,7 @@
         <div class="form-group mb-2">
           <label for="category">Category</label>
           <select
-            class="form-control mt-2"
+            class="form-select mt-2"
             id="category"
             [(ngModel)]="product.category"
             name="category"
@@ -152,12 +152,12 @@
           >
             <option
               [ngValue]="{
-                title : '',
-                description : '',
-                coverImage : '',
-                categoryId : '',
-              }"
-              disabled
+        title : 'No Category',
+        description : '',
+        coverImage : '',
+        categoryId : '',
+      }"
+              
               selected
             >
               -----select category-----
@@ -171,37 +171,41 @@
         <!-- PRODUCT IMAGE  -->
 
         <div class="form-group mb-2">
-            <label for="productImageName">Product Image</label>
-            <div class="text-center my-3" *ngIf="imageData.file">
-              <img style="height: 250px; width: auto;" [src]="imageData.previewImageUrl" alt="preview product image"/>
-            </div>
-            <input 
-              type="file" 
-              class="form-control-file mx-3" 
-              id="productImageName" 
-              [(ngModel)]="product.productImageName" 
-              name="productImageName" 
-              #productImageNameField="ngModel" 
-              accept="image/*"
-              (change)="imageFieldChanged($event)"
+          <label for="productImageName">Product Image</label>
+          <div class="text-center my-3" *ngIf="imageData.file">
+            <img
+              style="height: 250px; width: auto"
+              [src]="imageData.previewImageUrl"
+              alt="preview product image"
             />
-            <button
+          </div>
+          <input
+            type="file"
+            class="form-control-file mx-3"
+            id="productImageName"
+            [(ngModel)]="product.productImageName"
+            name="productImageName"
+            #productImageNameField="ngModel"
+            accept="image/*"
+            (change)="imageFieldChanged($event)"
+          />
+          <button
             type="button"
             (click)="resetImage()"
             class="btn btn-secondary btn-sm ms-2"
           >
-           Reset Image
+            Reset Image
           </button>
 
-
-            <span 
-              [hidden]="productImageNameField.valid || !productImageNameField.touched" 
-              class="text-danger mt-2 mx-2"
-            >
-              Product Image is required!
-            </span>
-          </div>
-
+          <span
+            [hidden]="
+              productImageNameField.valid || !productImageNameField.touched
+            "
+            class="text-danger mt-2 mx-2"
+          >
+            Product Image is required!
+          </span>
+        </div>
 
         <div class="container text-center mt-3">
           <button type="submit" class="btn btn-primary btn-md">

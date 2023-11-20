@@ -19,6 +19,7 @@ import { AddCategoryComponent } from './components/admin/add-category/add-catego
 import { ViewCategoriesComponent } from './components/admin/view-categories/view-categories.component';
 import { ViewOrdersComponent } from './components/admin/view-orders/view-orders.component';
 import { ViewUsersComponent } from './components/admin/view-users/view-users.component';
+import { UserComponent } from './components/pages/user/user.component';
 
 const routes: Routes = [
 
@@ -53,12 +54,26 @@ const routes: Routes = [
     component: SignupComponent,
     title:'Signup: Electronic Store'
   },
+
+
+
   {
     path:'user',
     component: DashboardComponent,
     title:'Dashboard: Electronic Store',
     canActivate:[normalUserGuard],
   },
+
+  
+  {
+    path:'profile',
+    component:UserComponent,
+    title:'User : Electronic Store',
+    canActivate:[normalUserGuard],
+  },
+
+
+
   {
     path:'admin',
     component: AdminDashboardComponent,
