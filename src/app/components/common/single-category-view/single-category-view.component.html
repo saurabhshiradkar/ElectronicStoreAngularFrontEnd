@@ -3,6 +3,7 @@
       [src]="category?.coverImage"
       class="card-img-top cover-image"
       [alt]="category?.title"
+      onerror="this.onerror=null; this.src='/assets/images/default.png';"
     />
     <div class="card-body">
       <h5 class="card-title">{{ category?.title }}</h5>

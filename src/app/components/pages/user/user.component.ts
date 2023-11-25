@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgModel } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
@@ -17,7 +16,7 @@ import { setLoginData } from 'src/app/store/auth/auth.actions';
 export class UserComponent {
   user?: User;
   previewImageUrl?: string;
-  imageFile?: File;
+  imageFile: File | undefined;
   loginResponse?: LoginResponse;
 
   constructor(
@@ -30,7 +29,7 @@ export class UserComponent {
     this.authService.getLoggedInData().subscribe({
       next: (loginData) => {
         this.user = { ...loginData.user } as User;
-        this.loginResponse = loginData;        
+        this.loginResponse = loginData;
       },
     });
   }
@@ -43,81 +42,10 @@ export class UserComponent {
     });
   }
 
-  formSubmitted(event: SubmitEvent): void {
-    event.preventDefault();
-    if (this.user) {
-      if (this.user.password != this.user.confirmPassword) {
-        this.toastrService.error(
-          'Confirm Password and Password does not match!'
-        );
-        return;
-      }
-
-      if (this.user.name.trim() === '') {
-        this.toastrService.error('Name Cannot be blank !');
-      }
-      //UPDATE USER
-
-      this.userService.updateUser(this.user).subscribe({
-        next: (updatedUser) => {
-          console.log(updatedUser);
-
-          const newLoginResponse = {
-            jwtToken: this.loginResponse?.jwtToken,
-            user: updatedUser,
-            login: this.loginResponse?.login,
-          };
-          this.authStore.dispatch(
-            setLoginData(newLoginResponse as LoginResponse)
-          );
-          this.toastrService.success('User Updated Successfully!');
-
-          //call image update api if image is seleted
-          //IMAGE UPLOAD
-          if (this.imageFile) {
-            this.userService
-              .uploadUserImage(updatedUser.userId, this.imageFile)
-              .subscribe({
-                next: (data :any) => {
-                  console.log(data);
-                  console.log(updatedUser);
-                  
-                  
-                  const newLoginResponse = {
-                    jwtToken: this.loginResponse?.jwtToken,
-                    user: {...updatedUser,imageName : data.imageName },
-                    login: this.loginResponse?.login,
-                  };
-
-
-                  this.authStore.dispatch(
-                    setLoginData(newLoginResponse as LoginResponse)
-                  );
-                  this.toastrService.success(data.message);
-                  this.imageFile = undefined;
-                  this.previewImageUrl = ''
-                  console.log(data);
-                  this.modalService.dismissAll();
-                },
-                error: (error) => {
-                  console.log(error);
-                  this.toastrService.error('Error in updating Image!');
-                },
-              });
-          }
-        },
-        error: (error) => {
-          this.toastrService.error('Error in Updating User!');
-          this.toastrService.error(error.error);
-          console.log(error);
-        },
-      });
-    }
-  }
-
   imageFieldChanged(event: Event) {
-    this.imageFile = (event.target as HTMLInputElement).files![0];
+    console.log('IMAGE FIELD CHANGED');
 
+    this.imageFile = (event.target as HTMLInputElement).files![0];
     if (
       this.imageFile.type == 'image/png' ||
       this.imageFile.type == 'image/jpeg'
@@ -136,5 +64,75 @@ export class UserComponent {
       this.toastrService.error('Only JPEG or PNG allowed !');
       this.imageFile = undefined;
     }
+  }
+
+  updateUserImage(user: User, imageFile: File) {
+    //call image update api if image is seleted
+    //IMAGE UPLOAD
+    if (this.imageFile) {
+      this.userService.uploadUserImage(user.userId, imageFile).subscribe({
+        next: (data: any) => {
+          console.log(data);
+          user.imageName = data.imageName;
+          console.log(this.user);
+
+          const newLoginResponse = {
+            jwtToken: this.loginResponse?.jwtToken,
+            user: { ...user, imageName: data.imageName },
+            login: this.loginResponse?.login,
+          };
+
+          this.authStore.dispatch(
+            setLoginData(newLoginResponse as LoginResponse)
+          );
+          this.toastrService.success(data.message);
+          this.imageFile = undefined;
+          this.previewImageUrl = '';
+          this.modalService.dismissAll();
+        },
+        error: (error) => {
+          console.log(error);
+          this.toastrService.error('Error in updating Image!');
+        },
+      });
+    }else{
+      this.toastrService.error("Kindly select Image!")
+    }
+
+  }
+
+  formSubmitted(event: SubmitEvent) {
+    event.preventDefault();
+
+    if (this.user?.password != this.user?.confirmPassword) {
+      this.toastrService.error('Confirm Password and Password does not match!');
+      return;
+    }
+
+    if (this.user?.name.trim() === '') {
+      this.toastrService.error('Name Cannot be blank !');
+    }
+
+    //UPDATE USER
+    this.userService.updateUser(this?.user as User).subscribe({
+      next: (newUser) => {
+        console.log(newUser);
+
+        const newLoginResponse = {
+          jwtToken: this.loginResponse?.jwtToken,
+          user: newUser,
+          login: this.loginResponse?.login,
+        };
+        this.authStore.dispatch(
+          setLoginData(newLoginResponse as LoginResponse)
+        );
+        this.toastrService.success('User Updated Successfully!');
+      },
+      error: (error) => {
+        this.toastrService.error('Error in Updating User!');
+        this.toastrService.error(error.error);
+        console.log(error);
+      },
+    });
   }
 }

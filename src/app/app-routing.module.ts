@@ -20,6 +20,11 @@ import { ViewCategoriesComponent } from './components/admin/view-categories/view
 import { ViewOrdersComponent } from './components/admin/view-orders/view-orders.component';
 import { ViewUsersComponent } from './components/admin/view-users/view-users.component';
 import { UserComponent } from './components/pages/user/user.component';
+import { LogoutComponent } from './components/admin/logout/logout.component';
+import { StoreComponent } from './components/pages/store/store.component';
+import { StoreCategoriesComponent } from './components/pages/store-categories/store-categories.component';
+import { ViewProductComponent } from './components/pages/view-product/view-product.component';
+import { CartComponent } from './components/pages/cart/cart.component';
 
 const routes: Routes = [
 
@@ -30,14 +35,31 @@ const routes: Routes = [
     title:'Home: Electronic Store'
   },
   {
+    path:'store',
+    component: StoreComponent,
+    title:'Store'
+  },
+  {
+    path:'store/:categoryId/:categoryTitle',
+    component: StoreCategoriesComponent,
+  },
+  {
     path:'categories',
     component: CategoriesComponent,
     title:'Categories: Electronic Store'
   },
   {
+    path:'product/:productId',
+    component: ViewProductComponent,
+  },
+  {
+    path:'cart',
+    component: CartComponent,
+    title:'Cart: Electronic Store'
+  },
+  {
     path:'about',
     component: AboutComponent,
-    title:'About: Electronic Store'
   },
   {
     path:'features',
@@ -60,7 +82,7 @@ const routes: Routes = [
   {
     path:'user',
     component: DashboardComponent,
-    title:'Dashboard: Electronic Store',
+    title:'User Dashboard: Electronic Store',
     canActivate:[normalUserGuard],
   },
 
@@ -114,6 +136,11 @@ const routes: Routes = [
         path:'users',
         component: ViewUsersComponent,
         title:'Users'
+      },
+      {
+        path:'logout',
+        component: LogoutComponent,
+        title:'Logout'
       },
     ]
   },

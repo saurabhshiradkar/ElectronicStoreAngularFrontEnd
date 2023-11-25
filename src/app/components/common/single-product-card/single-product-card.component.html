@@ -1,0 +1,49 @@
+<div *ngIf="product" class="card h-100 shadow-sm border border-secondary">
+  <div class="card-body">
+    <div class="image-container text-center">
+      <img
+        [src]="productService.getProductImageUrl(product.productId)"
+        [alt]="product.title"
+        onerror="this.onerror=null; this.src='/assets/images/default.png';"
+      />
+    </div>
+    <p class="h6">{{ product.title }}</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est qui</p>
+  </div>
+  <div class="p-3">
+    <!-- price and discounted price -->
+    <p class="fs-5">
+      Price :
+      <span class="fw-bold text-muted text-decoration-line-through me-2"
+        >&#8377;{{ product.price }}
+      </span>
+      <span class="fw-bolder text-success">
+        &#8377;{{ product.discountedPrice }}</span
+      >
+    </p>
+    <div class="d-flex justify-content-between">
+      <button
+        (click)="addToCartRequest(product)"
+        class="btn btn-xs text-center me-3"
+        [ngClass]="{
+          'btn-warning': product.stock,
+          'btn-danger': !product.stock
+        }"
+      >
+        {{ product.stock ? "Add to Cart" : "Out Of Stock" }}
+      </button>
+
+      <button
+        [routerLink]="['/product/', product.productId]"
+        class="btn btn-xs text-center"
+        [ngClass]="{
+          'btn-warning': product.stock,
+          'btn-danger': !product.stock
+        }"
+      >
+        View
+      </button>
+    </div>
+  </div>
+</div>

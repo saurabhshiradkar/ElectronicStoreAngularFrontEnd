@@ -1,0 +1,62 @@
+<div class="row border-bottom mt-3" *ngIf="cartItem">
+  <div class="col-md-2">
+    <div class="image-container text-center py-2">
+      <img
+        [src]="productService.getProductImageUrl(cartItem.product.productId)"
+        [alt]="'image'"
+        onerror="this.onerror=null; this.src='/assets/images/default.png';"
+      />
+    </div>
+  </div>
+  <div class="col-md-7 d-flex  align-items-center  ">
+    <div class="w-100">
+        <p class="fw-bold fs-5">{{ cartItem.product.title }}</p>
+        <div class="row fw-bold">
+          <div class="col-md-4">
+            <p>
+              Price :
+              <span class="text-muted text-decoration-line-through me-2"
+                >&#8377;{{ cartItem.product.price.toLocaleString("en-IN") }}</span
+              >
+              <span class="text-success"
+                >&#8377;{{
+                  cartItem.product.discountedPrice.toLocaleString("en-IN")
+                }}</span
+              >
+            </p>
+          </div>
+          <div class="col-md-4">
+            <p>
+              Quatity : <span>{{ cartItem.quantity }}</span>
+            </p>
+          </div>
+          <div class="col-md-4">
+            <p>
+              Total Price : <span> &#8377; {{ cartItem.totalPrice.toLocaleString("en-IN") }}</span>
+            </p>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="col-md-3 d-flex align-items-center fs-6">
+    <div class=" d-flex w-100 justify-content-end mb-2">
+      <button 
+      (click)="increaseQuantity(cartItem)"
+      class="btn btn-primary btn-xs me-2" >
+        <i-tabler [name]="'plus'"></i-tabler>
+      </button>
+
+      <button 
+      (click)="decreaseQuanity(cartItem)"
+      class="btn btn-secondary btn-xs me-2">
+        <i-tabler [name]="'minus'"></i-tabler>
+      </button>
+
+      <button 
+      (click)="deleteQuantity(cartItem)"
+      class="btn btn-danger btn-xs">
+        <i-tabler [name]="'trash'"></i-tabler>
+      </button>
+    </div>
+  </div>
+</div>

@@ -55,10 +55,10 @@ export class LoginComponent {
       next:(value:LoginResponse) => {
         // console.log("USER LOGGED IN SUCCESSFULLY USER NAME :- "+value.user?.email);
         this.store.dispatch(setLoginData(value));
-        this.router.navigate(['/user']);     
+        this.router.navigate(['/store']);     
       },
-      error:(error : HttpErrorResponse)=>{
-        const errorMessage = error.error.message;
+      error:(error : any)=>{
+        const errorMessage = error.message;
         console.log(`Error Message: ${errorMessage}`);
         
         // Show toastr message

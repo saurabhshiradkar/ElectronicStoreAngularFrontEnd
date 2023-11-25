@@ -1,0 +1,9 @@
+.image-container img{
+    max-height: 200px;
+    max-width: 200px;
+
+    width: auto;
+    margin: 5px;
+    object-fit: contain;
+    /* outline: auto; */
+}

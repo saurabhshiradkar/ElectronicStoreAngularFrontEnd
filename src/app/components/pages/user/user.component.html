@@ -24,7 +24,7 @@
       (click)="modal.dismiss('Cross click')"
     ></button>
   </div>
-  <div class="modal-body" *ngIf="this.user">
+  <div class="modal-body" *ngIf="user">
     <!-- {{ user | json }} -->
     <!-- UPDATE USER PROFILE -->
     <div class="container mt-2">
@@ -92,30 +92,34 @@
             [(ngModel)]="user.confirmPassword"
           />
         </div>
-
-        <div class="form-group mt-3">
-          <div class="preview-container text-center">
-            <img
-              class="image-preview"
-              [src]="previewImageUrl"
-              alt=""
-            />
-          </div>
-          <label class="form-label" for="image">Image:</label>
-          <input
-            (change)="imageFieldChanged($event)"
-            type="file"
-            class="form-control"
-            id="image"
-            accept="image/*"
-            name="imageName"
-          />
-        </div>
-
         <div class="form-group mt-3 text-center">
           <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
+
+         <!-- USER IMAGE UPDATE -->
+      <div class="form-group mt-3">
+        <div class="preview-container form-control text-center">
+          <img
+            class="image-preview"
+            [src]="previewImageUrl"
+            alt=""
+          />
+        </div>
+        <label class="form-label" for="image">Image:</label>
+        <input
+          (change)="imageFieldChanged($event)"
+          type="file"
+          class="form-control"
+          id="image"
+          name="imageName"
+        />
+        
+        <div class="form-group mt-3 text-center" >
+          <button (click)="updateUserImage(user,imageFile!)" type="button" class="btn btn-primary">Update Profile Image</button>
+        </div>
+      </div>
+
     </div>
     <!-- UPDATE USER PROFILE -->
   </div>

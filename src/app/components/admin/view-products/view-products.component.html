@@ -129,7 +129,8 @@
   <!-- VIEW MODAL BODY -->
   <div class="modal-body" *ngIf="product && !update">
     <div class="image-container text-center mb-3">
-      <img [src]="product.productImageName" alt="Product Image" />
+      <img [src]="product.productImageName" alt="Product Image" 
+      onerror="this.onerror=null; this.src='/assets/images/default.png';"/>
     </div>
 
     <div class="card mb-3">

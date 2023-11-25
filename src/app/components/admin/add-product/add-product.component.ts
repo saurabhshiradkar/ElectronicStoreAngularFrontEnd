@@ -37,9 +37,11 @@ export class AddProductComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    //loading categories
+    
     this.catStore.select('cat').subscribe({
 
-      //loading categories
       next: (categories) => {
         if (categories.length > 0) {
           // console.log('Categories already there...');

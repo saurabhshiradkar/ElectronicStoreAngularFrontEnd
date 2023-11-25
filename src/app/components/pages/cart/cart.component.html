@@ -1,0 +1,116 @@
+<div class="row mt-4 py-2">
+  <div class="col-md-10 col-sm-10 offset-md-1">
+    <div class="card shadow-sm">
+      <div class="card-body" *ngIf="cart">
+        <h3>Cart Items ({{ cart.items.length }})</h3>
+        <div>
+          <app-cart-item
+            [cartItem]="item"
+            *ngFor="let item of cart.items"
+            (itemIncreaseQuantityEvent)="increaseQuantity($event)"
+            (itemDecreseQuantityEvent)="decreseQuantity($event)"
+            (itemDeleteItemEvent)="deleteItem($event)"
+          ></app-cart-item>
+        </div>
+        <div class="mt-3 text-center" *ngIf="cart.items.length > 0">
+          <h3>
+            Grand Total :
+            <span class="text-success"
+              >{{
+                cartService.getGrandTotal(cart.items)
+                  | currency : "INR" : "symbol-narrow"
+              }}
+            </span>
+          </h3>
+          <button
+            class="btn btn-success me-2"
+            (click)="openPlaceOrderModal(orderContent)"
+          >
+            Place Order
+          </button>
+          <button (click)="clearCart()" class="btn btn-danger">
+            Clear Cart
+          </button>
+        </div>
+        <div *ngIf="cart.items.length <= 0">
+          <div class="alert alert-warning text-center">
+            <h3>No Items in Cart</h3>
+            <button routerLink="/store" class="btn btn-success btn-xs">
+              Add Products
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- order modal -->
+
+<ng-template #orderContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      Fill Details & Place Order
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="createOrderFormSubmitted($event)">
+      <div class="my-2">
+        <label class="form-label" for="billingName">Billing Name : </label>
+        <input
+          class="form-control"
+          type="text"
+          name="billingName"
+          id="billingName"
+          [(ngModel)]="orderRequest.billingName"
+          placeholder="Enter Here..."
+        />
+      </div>
+
+      <div class="my-2">
+        <label class="form-label" for="billingPhone">Billing Phone : </label>
+        <input
+          class="form-control"
+          type="text"
+          name="billingPhone"
+          id="billingPhone"
+          [(ngModel)]="orderRequest.billingPhone"
+          placeholder="Enter Here..."
+        />
+      </div>
+
+      <div class="my-2">
+        <label class="form-label" for="billingAddress">Billing Address : </label>
+        <textarea
+          class="form-control"
+          name="billingAddress"
+          id="billingAddress"
+          [(ngModel)]="orderRequest.billingAddress"
+          placeholder="Enter Here..."
+          rows="6"
+        ></textarea>
+      </div>
+
+      <div class="container text-center my-3">
+        <button type="submit" class="btn btn-success">Place Order</button>
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>

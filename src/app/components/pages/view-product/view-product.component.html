@@ -1,0 +1,115 @@
+<div class="container mt-4">
+  <div class="card" *ngIf="product">
+    <div class="card-body">
+      <h3 class="">{{ product.title }}</h3>
+
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="image-container text-center py-3">
+            <img
+              [src]="productService.getProductImageUrl(product.productId)"
+              alt=""
+              onerror="this.onerror=null; this.src='/assets/images/default.png';"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-responsive">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Product</td>
+                  <td class="fw-bold">
+                    {{ product.title }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Category</td>
+                  <td class="fw-bold">
+                    {{ product.category.title }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Stock</td>
+                  <td class="fw-bold">
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'text-bg-success': product.stock,
+                        'text-bg-danger': !product.stock
+                      }"
+                      >{{ product.stock ? "In Stock" : "Out of Stock" }}</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Price</td>
+                  <td class="fs-5">
+                    <span class="text-decoration-line-through text-muted"
+                      >&#8377; {{ product.price.toLocaleString("en-IN") }}</span
+                    >
+                    <span class="fw-bold text-success ms-2"
+                      >&#8377;
+                      {{
+                        product.discountedPrice.toLocaleString("en-IN")
+                      }}</span
+                    >
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <button
+                      (click)="addToCartRequest(product)"
+                      class="btn btn-xs text-center me-3"
+                      [ngClass]="{
+                        'btn-warning': product.stock,
+                        'btn-danger': !product.stock
+                      }"
+                    >
+                      {{ product.stock ? "Add to Cart" : "Out Of Stock" }}
+                    </button>
+                  </td>
+
+                  <td>
+                    <button
+                      routerLink="/store"
+                      class="btn btn-primary btn-xs text-center me-3"
+                    >
+                      Go To Store
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <p [innerHTML]="product.description"></p>
+
+        <div class="container text-center">
+          <button
+            (click)="addToCartRequest(product)"
+            class="btn btn-xs text-center me-3"
+            [ngClass]="{
+              'btn-warning': product.stock,
+              'btn-danger': !product.stock
+            }"
+          >
+            {{ product.stock ? "Add to Cart" : "Out Of Stock" }}
+          </button>
+
+
+          <button
+            routerLink="/store"
+            class="btn btn-primary btn-xs text-center"
+          >
+            Go To Store
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

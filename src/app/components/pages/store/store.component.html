@@ -1,0 +1,20 @@
+  <div class="row mx-4 my-3">
+    <h3 class="my-3 text-center" *ngIf="loading">Loading....</h3>
+    <div class="col-md-2 mt-2">
+      <app-categories-view></app-categories-view>
+    </div>
+    <div class="col-md-10 mt-2">
+      <!-- show products -->
+      <div 
+      infinite-scroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      (scrolled)="productsScrolled($event)"
+      class="row d-flex g-2" 
+      *ngIf="productsResponse">
+        <div class="col-xl-3 col-lg-4 col-md-6 " *ngFor="let product of productsResponse.content">
+          <app-single-product-card [product]="product" ></app-single-product-card>
+        </div>
+      </div>
+    </div>
+  </div>

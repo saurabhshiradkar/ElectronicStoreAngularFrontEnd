@@ -15,9 +15,39 @@ export class UserService {
     return this.httpClient.post<User>(`${environment.apiUrl}/users`, user);
   }
 
+  getUserImageUrl(userId: string) {
+    return `${environment.apiUrl}/users/image/${userId}`;
+    // return `${environment.apiUrl}/users/image/${userId}?${new Date().getTime()}`;
+  }
+
+  // getUserImageUrl(user: User) {
+  //   const imageNameDefault: string = '/assets/images/default_profile.png';
+
+  //   // if (user.imageName === '' || 'default.png') {
+  //   //   return imageNameDefault;
+  //   // }
+  //   // else
+  //   if (
+  //     user.imageName.startsWith('http') ||
+  //     user.imageName.startsWith('https') ||
+  //     user.imageName.includes('data') ||
+  //     user.imageName.includes('://')
+  //   ) {
+  //     return user.imageName;
+  //   } else {
+  //     return `${environment.apiUrl}/users/image/${user.userId}`;
+  //     // ?${new Date().getTime()}
+  //   }
+  // }
+
   //GET ALL USERS
-  getAllUsers() {
-    return this.httpClient.get<UsersResponse>(`${environment.apiUrl}/users`);
+  getAllUsers(
+    pageNumber = 0,
+    pageSize=10,
+    sortBy='name',
+    sortDir='asc'
+  ) {
+    return this.httpClient.get<UsersResponse>(`${environment.apiUrl}/users?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`);
   }
 
   //GET SINGLE USER
@@ -61,25 +91,5 @@ export class UserService {
     return this.httpClient.get<User[]>(
       `${environment.apiUrl}/users/search/${query}`
     );
-  }
-
-  getUserImageUrl(user: User) {
-    const imageNameDefault: string = '/assets/images/default_profile.png';
-
-    if (user.imageName === '' || 'default.png') {
-      return imageNameDefault;
-    } 
-    else 
-    if (
-      user.imageName.startsWith('http') ||
-      user.imageName.startsWith('https') ||
-      user.imageName.includes('data') || 
-      user.imageName.includes('://')
-    ) {
-      return user.imageName;
-    } else {
-      return `${environment.apiUrl}/users/image/${user.userId}`;
-      // ?${new Date().getTime()}
-    }
   }
 }

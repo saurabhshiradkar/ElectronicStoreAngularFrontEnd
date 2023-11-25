@@ -6,6 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent {
+
+
   adminMenus = [
     {
       title:'Home',
@@ -51,9 +53,12 @@ export class AdminDashboardComponent {
     },
     {
       title:'Logout',
-      link:'#!',
+      link:'/admin/logout',
       icon:'logout',
-      cssClass:''
+      cssClass:'',
     },
   ]
+
+
+
 }

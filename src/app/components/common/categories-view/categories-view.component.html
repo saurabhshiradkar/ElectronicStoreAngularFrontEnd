@@ -1,0 +1,27 @@
+<div class="list-group">
+  <a
+    [routerLink]="'/store'"
+    class="list-group-item list-group-item-action mb-2 px-1"
+    ><span class="h6"
+      ><img
+        class="cat-image m-1"
+        src="https://images.pexels.com/photos/3775620/pexels-photo-3775620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        alt="category image"
+        onerror="this.onerror=null; this.src='/assets/images/default.png';"
+      />
+      All Products</span
+    ></a
+  >
+  <a
+    *ngFor="let cat of categories"
+    routerLinkActive="active"
+    [routerLink]="['/store', cat.categoryId,cat.title]"
+    class="list-group-item list-group-item-action mb-2 px-1"
+    ><span class="h6">
+      <img class="cat-image m-1" [src]="cat.coverImage" alt="category image" 
+      onerror="this.onerror=null; this.src='/assets/images/default.png';"
+      />
+      {{ cat.title }}
+    </span></a
+  >
+</div>

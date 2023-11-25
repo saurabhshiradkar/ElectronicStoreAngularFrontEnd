@@ -30,6 +30,7 @@
             class="img-fluid border border-light-subtle border-2 rounded-3"
             [src]="selectedCategory?.coverImage"
             [alt]="selectedCategory?.title"
+            onerror="this.onerror=null; this.src='/assets/images/default.png';"
           />
         </div>
         <p class="mt-3">

@@ -40,7 +40,11 @@ import {
   IconUsersGroup,
   IconTruckDelivery,
   IconLogout,
-  IconScriptPlus
+  IconScriptPlus,
+  IconPlus,
+  IconMinus,
+  IconHttpDelete,
+  IconTrash,
  
 } from 'angular-tabler-icons/icons';
 import { JwtInterceptor } from './services/jwtInterceptor';
@@ -52,6 +56,16 @@ import { QuillModule } from 'ngx-quill';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { UserComponent } from './components/pages/user/user.component';
 import { UserViewComponent } from './components/common/user-view/user-view.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { LogoutComponent } from './components/admin/logout/logout.component';
+import { StoreComponent } from './components/pages/store/store.component';
+import { SingleProductCardComponent } from './components/common/single-product-card/single-product-card.component';
+import { CategoriesViewComponent } from './components/common/categories-view/categories-view.component';
+import { StoreCategoriesComponent } from './components/pages/store-categories/store-categories.component';
+import { ViewProductComponent } from './components/pages/view-product/view-product.component';
+import { CartComponent } from './components/pages/cart/cart.component';
+import { CartItemComponent } from './components/common/cart-item/cart-item.component';
+import { cartReducer } from './store/cart/cart.reducers';
 
 const icons = {
   IconCamera,
@@ -65,7 +79,12 @@ const icons = {
   IconUsersGroup,
   IconTruckDelivery,
   IconLogout,
-  IconScriptPlus
+  IconScriptPlus,
+  IconPlus,
+  IconMinus,
+  IconHttpDelete,
+  IconTrash
+  
 
 }
 
@@ -92,6 +111,14 @@ const icons = {
     SingleCategoryViewComponent,
     UserComponent,
     UserViewComponent,
+    LogoutComponent,
+    StoreComponent,
+    SingleProductCardComponent,
+    CategoriesViewComponent,
+    StoreCategoriesComponent,
+    ViewProductComponent,
+    CartComponent,
+    CartItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,7 +136,8 @@ const icons = {
     StoreModule.forRoot(
       {
         auth : authReducer,
-        cat : categoryReducer
+        cat : categoryReducer,
+        cart : cartReducer,
       }
       ),
     TablerIconsModule.pick(icons),
@@ -117,6 +145,7 @@ const icons = {
     SweetAlert2Module.forRoot({
 
     }),
+    InfiniteScrollModule,
 
   ],
   providers: [
