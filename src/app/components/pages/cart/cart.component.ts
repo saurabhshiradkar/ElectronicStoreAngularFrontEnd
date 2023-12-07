@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { Cart, CartItem } from 'src/app/models/cart.model';
+import { Order } from 'src/app/models/order.model';
 import {
   OrderRequest,
   OrderStatus,
@@ -15,6 +17,7 @@ import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { OrderService } from 'src/app/services/order.service';
+import { PaymentService } from 'src/app/services/payment.service';
 import { updateCart } from 'src/app/store/cart/cart.actions';
 
 @Component({
@@ -22,7 +25,7 @@ import { updateCart } from 'src/app/store/cart/cart.actions';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })
-export class CartComponent {
+export class CartComponent implements OnDestroy {
   cart?: Cart;
   user?: User;
 
@@ -36,6 +39,8 @@ export class CartComponent {
     paymentStatus: PaymentStatus.PENDING,
   };
 
+  private userSubscription?:Subscription;
+
   constructor(
     private authService: AuthService,
     public cartService: CartService,
@@ -43,10 +48,11 @@ export class CartComponent {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     private _order: OrderService,
+    private _payment : PaymentService,
 
     private router: Router
   ) {
-    this.authService.getLoggedInData().subscribe({
+    this.userSubscription = this.authService.getLoggedInData().subscribe({
       next: (loginResponse) => {
         if (!loginResponse.user) {
           this.toastrService.warning('Please Login !');
@@ -62,6 +68,9 @@ export class CartComponent {
         console.log(error);
       },
     });
+  }
+  ngOnDestroy(): void {
+    this.userSubscription?.unsubscribe();
   }
 
   loadCart() {
@@ -249,7 +258,7 @@ export class CartComponent {
     console.log(this.orderRequest);
 
     this._order.createOrder(this.orderRequest).subscribe({
-      next: (order: any) => {
+      next: (order : any) => {
         this.toastrService.success('Order Created !', '', {
           positionClass: 'toast-bottom-center',
         });
@@ -258,6 +267,44 @@ export class CartComponent {
         });
         this.modalService.dismissAll()
         this.loadCart();
+        //initiate payment
+        const subscription = this._payment.initiatePayment(order.orderId).subscribe({
+          next:(data : any)=>{
+            console.log(data);
+            this._payment.payWithRazorPay({
+              amount : data.amount,
+              razorpayOrderId : data.razorpayOrderId,
+              userName : order.billingName,
+              email : order.user.email,
+              contact : order.billingPhone,
+            }).subscribe({
+              next:(data)=>{
+                //success
+                console.log("From Cart Component");
+                console.log(data);
+                subscription.unsubscribe();
+
+                //
+                this._payment.captureAndVarifyPayment(order.orderId,data).subscribe({
+                  next:(data : any)=>{
+                    console.log(data);
+                    this.toastrService.success(data.message);
+                  },
+                  error:(error)=>{
+                    console.log(error);
+                    this.toastrService.error("Error In Capturing Payment !")
+                  }
+                })
+              },
+              error:(error)=>{
+                console.log("Error From Cart Component");
+                console.log(error);
+                subscription.unsubscribe();
+              },
+            });
+            
+          },
+        });
       },
     });
   }

@@ -4,13 +4,21 @@ import { environment } from 'src/environments/environment';
 import { LoginResponse } from '../models/loginresponse.model';
 import { Store } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
+import { SocialUser } from '@abacritt/angularx-social-login/public-api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+
   constructor(private http:HttpClient, private store: Store<{auth : LoginResponse}>) { }
+
+
+
+  signInWIthGoogle(user: SocialUser) {
+   return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/google`,user);
+  }
 
 
   generateToken(loginData:{email: string; password: string}){

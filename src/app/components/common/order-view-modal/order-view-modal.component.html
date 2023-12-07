@@ -1,0 +1,168 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Order Detail</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid" *ngIf="order">
+      <h4>Order By : {{ order.user.name }}</h4>
+      <div class="responsive-table mt-4" *ngIf="!updateState">
+        <table class="table table-bordered">
+          <tr>
+            <td>Billing Name</td>
+            <td>
+              {{ order.billingName }}
+            </td>
+          </tr>
+          <tr>
+            <td>Billing Phone</td>
+            <td>
+              {{ order.billingPhone }}
+            </td>
+          </tr>
+          <tr>
+            <td>Billing Address</td>
+            <td>
+              {{ order.billingAddress }}
+            </td>
+          </tr>
+          <tr>
+            <td>Placed On</td>
+            <td>
+              {{ order.orderedDate | date : "dd-MM-yyy" }}
+            </td>
+          </tr>
+          <tr
+            [ngClass]="{
+              '': order.orderStatus == orderStatus.DELIVERED,
+              '': order.orderStatus == orderStatus.PENDING
+            }"
+          >
+            <td>Order Status</td>
+            <td>
+              <div>
+                {{ order.orderStatus }}
+              </div>
+            </td>
+          </tr>
+          <tr
+            [ngClass]="{
+              'table-success': order.paymentStatus == paymentStatus.SUCCESS,
+              'table-warning': order.paymentStatus == paymentStatus.PENDING
+            }"
+          >
+            <td>Payment Status</td>
+            <td>
+              {{ order.paymentStatus }}
+            </td>
+          </tr>
+          <tr>
+            <td>Amount</td>
+            <td class="text-success">
+              {{ order.orderAmount | currency : "INR" : "symbol" : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td>Delivered Date</td>
+            <td class="">
+              {{ order.deliveredDate ? order.deliveredDate : "Not Yet" }}
+            </td>
+          </tr>
+        </table>
+
+        <div class="list-group">
+          <div class="list-group-item" *ngFor="let item of order.orderItems">
+            <div class="row">
+              <div class="col-md-3 text-center">
+                <img
+                  class="product-image"
+                  [src]="
+                    productService.getProductImageUrl(item.product.productId)
+                  "
+                  alt=""
+                  onerror="this.onerror=null; this.src='/assets/images/default.png';"
+                />
+              </div>
+              <div class="col-md-9">
+                <p>{{ item.product.title }}</p>
+
+                <div class="row">
+                  <div class="col">
+                    <p>Quantity : {{ item.quantity }}</p>
+                  </div>
+                  <div class="col">
+                    <p>Product Price : {{ item.product.discountedPrice }}</p>
+                  </div>
+                </div>
+                <p>Item Price : {{ item.totalPrice }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item text-center">
+            <h5>Grand Total : {{ order.orderAmount }}</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPDATE ORDER -->
+
+      <div *ngIf="updateState">
+        <form>
+          <div class="mt-3">
+            <label for="orderStatus">Change Order Status</label>
+            <select
+              [(ngModel)]="order.orderStatus"
+			  [compareWith]="compareFn"
+              class="form-select"
+              name="orderStatus"
+              id="orderStatus"
+            >
+              <option [ngValue]="os.key" *ngFor="let os of orderStatus | keyvalue" [selected]="os.key === order.orderStatus">
+                {{ os.value }}
+              </option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+	    <!-- UPDATE ORDER -->
+
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="container text-center">
+      <button
+        *ngIf="_auth.checkLoginAndAdminUser() | async"
+        (click)="changeState()"
+        type="button"
+        class="btn me-4"
+        [ngClass]="{ 'btn-warning ': !updateState, 'btn-success': updateState }"
+      >
+        {{ updateState ? "View Detail" : "Update" }}
+      </button>
+
+      <button
+      *ngIf="order?.paymentStatus !== paymentStatus.SUCCESS"
+        type="button"
+        class="btn btn-success me-4"
+        (click)="payForOrder(order)"
+      >
+        PayNow
+      </button>
+      <button
+
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="modal.close('Save click')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>

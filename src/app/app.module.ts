@@ -39,6 +39,7 @@ import {
   IconFileDiff,
   IconUsersGroup,
   IconTruckDelivery,
+  IconTruckReturn,
   IconLogout,
   IconScriptPlus,
   IconPlus,
@@ -66,6 +67,12 @@ import { ViewProductComponent } from './components/pages/view-product/view-produ
 import { CartComponent } from './components/pages/cart/cart.component';
 import { CartItemComponent } from './components/common/cart-item/cart-item.component';
 import { cartReducer } from './store/cart/cart.reducers';
+import { OrderViewModalComponent } from './components/common/order-view-modal/order-view-modal.component';
+import { OrderHubComponent } from './components/common/order-hub/order-hub.component';
+import { MyOrdersComponent } from './components/pages/my-orders/my-orders.component';
+import { PaymentComponent } from './components/common/payment/payment.component';
+import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { environment } from 'src/environments/environment';
 
 const icons = {
   IconCamera,
@@ -78,6 +85,7 @@ const icons = {
   IconFileDiff,
   IconUsersGroup,
   IconTruckDelivery,
+  IconTruckReturn,
   IconLogout,
   IconScriptPlus,
   IconPlus,
@@ -119,6 +127,10 @@ const icons = {
     ViewProductComponent,
     CartComponent,
     CartItemComponent,
+    OrderViewModalComponent,
+    OrderHubComponent,
+    MyOrdersComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,7 +139,7 @@ const icons = {
     BrowserAnimationsModule,
     ToastrModule.forRoot(
       { 
-        positionClass:'toast-top-right',
+        positionClass:'toast-top-center',
         progressBar:true,
         closeButton:true
       }),
@@ -146,6 +158,8 @@ const icons = {
 
     }),
     InfiniteScrollModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
 
   ],
   providers: [
@@ -153,6 +167,23 @@ const icons = {
       provide : HTTP_INTERCEPTORS,
       useClass : JwtInterceptor,
       multi:true
+    },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.GOOGLE_CLIENT_ID
+            )
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
     }
   ],
   bootstrap: [AppComponent]

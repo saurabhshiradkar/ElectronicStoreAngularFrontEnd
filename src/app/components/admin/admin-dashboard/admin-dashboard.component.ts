@@ -52,6 +52,12 @@ export class AdminDashboardComponent {
       cssClass:''
     },
     {
+      title:'My Orders',
+      link:'/my/orders',
+      icon:'truck-return',
+      cssClass:''
+    },
+    {
       title:'Logout',
       link:'/admin/logout',
       icon:'logout',

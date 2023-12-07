@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { IInfiniteScrollEvent } from 'ngx-infinite-scroll';
 import { Order, OrderResponse } from 'src/app/models/order.model';
 import { OrderStatus, PaymentStatus } from 'src/app/models/order.request.model';
@@ -6,15 +6,16 @@ import { HelperService } from 'src/app/services/helper.service';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
-  selector: 'app-view-orders',
-  templateUrl: './view-orders.component.html',
-  styleUrls: ['./view-orders.component.css']
+  selector: 'app-order-hub',
+  templateUrl: './order-hub.component.html',
+  styleUrls: ['./order-hub.component.css']
 })
-export class ViewOrdersComponent implements OnInit {
+export class OrderHubComponent implements OnInit {
 
-  orderResponse ?: OrderResponse;
   orderStatus = OrderStatus;
   paymentStatus = PaymentStatus;
+
+ @Input() orderResponse ?: OrderResponse;
 
   pageNumber = 0;
   loading = false;
@@ -25,9 +26,8 @@ export class ViewOrdersComponent implements OnInit {
   
   ){}
 
-
   ngOnInit(): void {
-    this.loadPaginatedOrders(0);
+    // this.loadPaginatedOrders(0);
   }
 
 
@@ -83,12 +83,10 @@ export class ViewOrdersComponent implements OnInit {
     );
   }
 
+    //open view order modal
 
-
-  //open view order modal
-
-  openModal(order : Order){
-    this._helper.emitOrderEvent(order);
-  }
-
+    openModal(order : Order){
+      this._helper.emitOrderEvent(order);
+    }
+  
 }
